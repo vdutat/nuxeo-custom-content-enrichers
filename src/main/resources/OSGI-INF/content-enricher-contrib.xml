@@ -1,0 +1,13 @@
+<component name="org.nuxeo.enrichers.custom-content-enricher.contrib">
+
+  <extension target="org.nuxeo.ecm.automation.io.services.enricher.ContentEnricherService"
+    point="enricher">
+
+    <enricher class="org.nuxeo.enrichers.AllowedDocumentTypesContentEnricher"
+      name="allowedDocumentTypes" >
+      <category>allowedDocumentTypes</category>
+    </enricher>
+
+  </extension>
+
+</component>
