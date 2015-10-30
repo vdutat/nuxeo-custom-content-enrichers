@@ -43,6 +43,7 @@ Here is an extract of a JSON payload return by a `GET` request on a `Workspace` 
         "label": "Picture",
         "id": "Picture"
       },
+      {
         "bigIcon": "/img/easyshare_100.png",
         "icon": "/img/easyshare.png",
         "description": "Container for holding shared files and accessible anonymously by URL",
