@@ -61,6 +61,7 @@ public class CommentsContentEnricher extends AbstractJsonEnricher<DocumentModel>
             jg.writeStartArray();
             for(DocumentModel comment : comments) {
                 jg.writeStartObject();
+                jg.writeStringField("id", comment.getId());
                 jg.writeStringField("text", (String) comment.getPropertyValue("comment:text"));
                 jg.writeStringField("author", (String) comment.getPropertyValue("comment:author"));
                 jg.writeStringField("creationDate", DateParser.formatW3CDateTime(((Calendar) comment.getPropertyValue("comment:creationDate")).getTime()));
