@@ -121,18 +121,22 @@ Here is an extract of a JSON payload return by a `GET` request on a document:
 
   "contextParameters": 
    { "comments": 
-      [ { "text": "Comment 1 from Admin",
+      [ { "id": "d80947b0-8f02-4a93-9542-083de0a67739",
+          "text": "Comment 1 from Admin",
           "author": "Administrator",
           "creationDate": "2016-02-01T23:00:49.13Z",
           "replies": 
-           [ { "text": "Reply 1 from vdu1",
+           [ { "id": "fec42d44-76cb-4a66-b0c5-dee08ebdf63b",
+               "text": "Reply 1 from vdu1",
                "author": "vdu1",
                "creationDate": "2016-02-01T23:07:44.20Z",
                "replies": 
-                [ { "text": "Reply 2 from Admin",
+                [ { "id": "a6552229-c00c-40ea-ad8a-f74b65c299fa",
+                    "text": "Reply 2 from Admin",
                     "author": "Administrator",
                     "creationDate": "2016-02-02T00:51:15.83Z" } ] } ] },
-        { "text": "Comment 2 from Admin",
+        { "id": "fac72164-8119-44bf-a4d4-04f2b3db1a84'"
+          "text": "Comment 2 from Admin",
           "author": "Administrator",
           "creationDate": "2016-02-02T00:51:31.44Z" } ] } 
 ```
