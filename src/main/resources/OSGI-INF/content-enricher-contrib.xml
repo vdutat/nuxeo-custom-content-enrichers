@@ -6,6 +6,7 @@
     <register class="org.nuxeo.enrichers.TagsContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.CommentsContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.SchemasContentEnricher" enable="true" />
+    <register class="org.nuxeo.enrichers.ProxiesSchemasContentEnricher" enable="true" />
   </extension>
 
 </component>
