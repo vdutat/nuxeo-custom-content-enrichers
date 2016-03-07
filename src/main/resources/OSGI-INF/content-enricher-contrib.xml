@@ -7,6 +7,7 @@
     <register class="org.nuxeo.enrichers.CommentsContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.SchemasContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.ProxiesSchemasContentEnricher" enable="true" />
+    <register class="org.nuxeo.enrichers.RelationDocumentsContentEnricher" enable="true" />
   </extension>
 
 </component>
