@@ -23,13 +23,18 @@ import static org.nuxeo.ecm.core.io.registry.reflect.Priorities.REFERENCE;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.Principal;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
 import org.nuxeo.ecm.core.io.registry.context.MaxDepthReachedException;
 import org.nuxeo.ecm.core.io.registry.context.RenderingContext.SessionWrapper;
@@ -50,8 +55,9 @@ public class RelationDocumentsContentEnricher extends AbstractJsonEnricher<Docum
 
     @Override
     public void write(JsonGenerator jg, DocumentModel document) throws IOException {
+        Principal principal = ctx.getSession(document).getSession().getPrincipal();
         try (SessionWrapper wrapper = ctx.getSession(document)) {
-            final String id = document.getId();
+            String id = document.getId();
             new UnrestrictedSessionRunner(wrapper.getSession()) {
                 @Override
                 public void run() {
@@ -62,6 +68,16 @@ public class RelationDocumentsContentEnricher extends AbstractJsonEnricher<Docum
                         .append("relation:source").append("=").append(NXQL.escapeString(id))
                         .append(Operator.OR.toString()).append(" " + "relation:target" + " ").append("=").append(NXQL.escapeString(id));
                         DocumentModelList relations = session.query(query.toString());
+                        CollectionUtils.filter(relations, new Predicate() {
+                            @Override
+                            public boolean evaluate(Object object) {
+                                DocumentModel doc = (DocumentModel) object;
+                                if (!session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:source")), SecurityConstants.READ)
+                                        || !session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:target")), SecurityConstants.READ)) {
+                                    return false;
+                                }
+                                return true;
+                            }});
                         jg.writeFieldName(NAME);
                         // delegate the marshalling to Nuxeo Platform
                         writeEntity(relations, jg);
