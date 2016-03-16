@@ -24,9 +24,8 @@ import static org.nuxeo.ecm.core.io.registry.reflect.Priorities.REFERENCE;
 import java.io.Closeable;
 import java.io.IOException;
 import java.security.Principal;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -34,6 +33,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
+import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
 import org.nuxeo.ecm.core.io.registry.context.MaxDepthReachedException;
@@ -68,19 +68,13 @@ public class RelationDocumentsContentEnricher extends AbstractJsonEnricher<Docum
                         .append("relation:source").append("=").append(NXQL.escapeString(id))
                         .append(Operator.OR.toString()).append(" " + "relation:target" + " ").append("=").append(NXQL.escapeString(id));
                         DocumentModelList relations = session.query(query.toString());
-                        CollectionUtils.filter(relations, new Predicate() {
-                            @Override
-                            public boolean evaluate(Object object) {
-                                DocumentModel doc = (DocumentModel) object;
-                                if (!session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:source")), SecurityConstants.READ)
-                                        || !session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:target")), SecurityConstants.READ)) {
-                                    return false;
-                                }
-                                return true;
-                            }});
+                        Predicate<DocumentModel> canReadSourceDocument = doc -> session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:source")), SecurityConstants.READ);
+                        Predicate<DocumentModel> canReadTargetDocument = doc -> session.hasPermission(principal, new IdRef((String) doc.getPropertyValue("relation:target")), SecurityConstants.READ);
+                        Predicate<DocumentModel> canReadRelatedDocuments = canReadSourceDocument.and(canReadTargetDocument);
+                        DocumentModelList accessableRelations = relations.stream().filter(canReadRelatedDocuments).collect(Collectors.toCollection(DocumentModelListImpl::new));
                         jg.writeFieldName(NAME);
                         // delegate the marshalling to Nuxeo Platform
-                        writeEntity(relations, jg);
+                        writeEntity(accessableRelations, jg);
                     } catch (MaxDepthReachedException e) {
                         // do not apply enricher
                     } catch (IOException e) {
