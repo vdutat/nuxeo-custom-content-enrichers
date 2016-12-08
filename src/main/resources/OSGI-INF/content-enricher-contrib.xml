@@ -8,6 +8,7 @@
     <register class="org.nuxeo.enrichers.SchemasContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.ProxiesSchemasContentEnricher" enable="true" />
     <register class="org.nuxeo.enrichers.RelationDocumentsContentEnricher" enable="true" />
+    <register class="org.nuxeo.enrichers.GrandChildrenContentEnricher" enable="true" />
   </extension>
 
 </component>
