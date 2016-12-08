@@ -7,4 +7,5 @@ Bundle-Vendor: Nuxeo
 Bundle-Version: 1.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-custom-content-enrichers
-Nuxeo-Component: OSGI-INF/content-enricher-contrib.xml
+Nuxeo-Component: OSGI-INF/content-enricher-contrib.xml,
+ OSGI-INF/recent-children-enricher-contrib.xml
