@@ -32,7 +32,9 @@ import org.nuxeo.ecm.automation.core.scripting.DateWrapper;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.LifeCycleConstants;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
+import org.nuxeo.ecm.core.io.registry.context.RenderingContext.SessionWrapper;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 import org.nuxeo.ecm.core.query.sql.model.Operator;
@@ -58,7 +60,7 @@ import org.nuxeo.ecm.core.query.sql.model.Operator;
 @Setup(mode = SINGLETON, priority = REFERENCE)
 public class RecentChildrenEnricher extends AbstractJsonEnricher<DocumentModel> {
 
-    protected static final Log log = LogFactory.getLog(GrandChildrenContentEnricher.class);
+    protected static final Log log = LogFactory.getLog(RecentChildrenEnricher.class);
 
     public static final String NAME = "recent_children";
 
@@ -68,8 +70,24 @@ public class RecentChildrenEnricher extends AbstractJsonEnricher<DocumentModel> 
 
     @Override
     public void write(JsonGenerator jg, DocumentModel doc) throws IOException {
+        List<DocumentModel> children = null;
+
+        String parentPath = ctx.getParameter("parentPath");
+        if (log.isDebugEnabled()) {
+            if (parentPath != null) {
+                log.debug("<getChildren> parentPath=" + parentPath);
+            }
+        }
+        String parentId = doc.getId();
+        try (SessionWrapper wrapper = ctx.getSession(doc)) {
+            if (parentPath != null) {
+                DocumentModel parentDoc = wrapper.getSession().getDocument(new PathRef(parentPath));
+                parentId = parentDoc.getId();
+            }
+            children = getChildren(wrapper.getSession(), parentId);
+        }
         jg.writeFieldName(NAME);
-        writeEntity(getChildren(doc.getCoreSession(), doc.getId()), jg);
+        writeEntity(children, jg);
     }
 
     protected List<DocumentModel> getChildren(CoreSession session, String parentId) {
