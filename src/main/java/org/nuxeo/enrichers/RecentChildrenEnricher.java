@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.nuxeo.ecm.automation.core.scripting.DateWrapper;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -38,6 +37,8 @@ import org.nuxeo.ecm.core.io.registry.context.RenderingContext.SessionWrapper;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 import org.nuxeo.ecm.core.query.sql.model.Operator;
+
+import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
  * Enrich {@link nuxeo.ecm.core.api.DocumentModel} Json.

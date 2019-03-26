@@ -28,10 +28,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
@@ -41,6 +41,8 @@ import org.nuxeo.ecm.core.io.registry.context.RenderingContext.SessionWrapper;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 import org.nuxeo.ecm.core.query.sql.model.Operator;
+
+import com.fasterxml.jackson.core.JsonGenerator;
 
 @Setup(mode = SINGLETON, priority = REFERENCE)
 public class RelationDocumentsContentEnricher extends AbstractJsonEnricher<DocumentModel> {
@@ -55,7 +57,7 @@ public class RelationDocumentsContentEnricher extends AbstractJsonEnricher<Docum
 
     @Override
     public void write(JsonGenerator jg, DocumentModel document) throws IOException {
-        Principal principal = ctx.getSession(document).getSession().getPrincipal();
+        NuxeoPrincipal principal = ctx.getSession(document).getSession().getPrincipal();
         try (SessionWrapper wrapper = ctx.getSession(document)) {
             String id = document.getId();
             new UnrestrictedSessionRunner(wrapper.getSession()) {

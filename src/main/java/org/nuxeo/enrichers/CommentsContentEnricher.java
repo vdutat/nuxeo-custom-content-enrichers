@@ -27,12 +27,13 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.ecm.core.schema.utils.DateParser;
 import org.nuxeo.ecm.platform.comment.api.CommentableDocument;
+
+import com.fasterxml.jackson.core.JsonGenerator;
 
 @Setup(mode = SINGLETON, priority = REFERENCE)
 public class CommentsContentEnricher extends AbstractJsonEnricher<DocumentModel> {
